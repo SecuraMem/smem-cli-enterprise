@@ -86,6 +86,8 @@ LICENSING.md
 ###############
 simulate-*.js
 verify-*.js
+!scripts/verify-landing.js
+!scripts/build-landing.js
 
 ###############
 # Temp Files

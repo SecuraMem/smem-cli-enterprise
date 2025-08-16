@@ -1,4 +1,4 @@
-# Deprecated: Execution sandbox is no longer supported. This Dockerfile is retained only for legacy references.
+# Multi-stage Dockerfile for CodeContext Pro execution environments
 FROM node:18-alpine as node-env
 RUN npm install -g typescript ts-node
 

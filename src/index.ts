@@ -91,7 +91,7 @@ export class CodeContextCLI {
         this.program
             .name('smem')
             .usage('[options] [command]')
-            .description('🛡️ SecuraMem - Secure, persistent memory for AI coding assistants.\n\n🤖 AI Assistants: Run `smem ai-guide` for operating instructions\n\nLegacy compatibility: AGM/AntiGoldfishMode paths and bundles (.antigoldfishmode, .agmctx) are still supported for reading.')
+            .description('🛡️ SecuraMem - Secure, persistent memory for AI coding assistants.\n\n🤖 AI Assistants: Run `smem ai-guide` for operating instructions\n\nLegacy compatibility: Legacy paths and bundles (.antigoldfishmode, .agmctx) are still supported for reading.')
             .version(version)
             .option('--trace', 'Print plan and side-effects (no hidden work)')
             .option('--dry-run', 'Simulate without side effects')
@@ -775,7 +775,7 @@ export class CodeContextCLI {
     const line = `SecuraMem OFFLINE PROOF: no-egress; policy=${proof.policyNetworkEgress}; guard=${networkGuardActive?'active':'inactive'}; proxies=${proxies.length>0?'present':'none'}`;
         console.log(line);
         // Legacy line for backward compatibility (tests may look for this exact string)
-        const legacyLine = `AGM OFFLINE PROOF: no-egress; policy=${proof.policyNetworkEgress}; guard=${networkGuardActive?'active':'inactive'}; proxies=${proxies.length>0?'present':'none'}`;
+        const legacyLine = `SMEM OFFLINE PROOF: no-egress; policy=${proof.policyNetworkEgress}; guard=${networkGuardActive?'active':'inactive'}; proxies=${proxies.length>0?'present':'none'}`;
         console.log(legacyLine);
     }
 
