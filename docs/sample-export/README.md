@@ -1,6 +1,6 @@
 # Sample Export Bundle
 
-This directory provides a minimal illustrative `.agmctx` export bundle so reviewers can inspect the structure *without* needing to generate one locally.
+This directory provides a minimal illustrative `.smemctx` export bundle so reviewers can inspect the structure *without* needing to generate one locally.
 
 Files included:
 - `manifest.json` – schema, exporter provenance (anonymised), counts.
@@ -13,9 +13,9 @@ Security note: Real bundles will contain cryptographically accurate checksums an
 
 To generate a real bundle locally:
 ```
-agm export-context --out ./ctx.agmctx --type code --zip --sign
+smem export-context --out ./ctx.smemctx --type code --zip --sign
 ```
 Then inspect receipts:
 ```
-agm receipt-show --last
+smem receipt-show --last
 ```

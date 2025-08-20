@@ -35,9 +35,9 @@ smem policy trust search-code --minutes 15
 
 ## Air-gapped context policy toggles (.smemctx)
 
-SecuraMem supports portable context via `.smemctx`. Two policy toggles control signing and import verification (legacy `.agmctx` imports are still accepted):
+SecuraMem supports portable context via `.smemctx`. Two policy toggles control signing and import verification (legacy `.smemctx` imports are still accepted):
 
-- `signExports` (boolean): When true, `smem export-context` signs by default as if `--sign` was passed. You can also force signing with the flag or set the environment toggle `SMEM_SIGN_EXPORT=1` (legacy `AGM_SIGN_EXPORT=1` also honored).
+- `signExports` (boolean): When true, `smem export-context` signs by default as if `--sign` was passed. You can also force signing with the flag or set the environment toggle `SMEM_SIGN_EXPORT=1` (legacy `SMEM_SIGN_EXPORT=1` also honored).
 - `requireSignedContext` (boolean): When true, `smem import-context` requires a valid signature (signature.bin/publickey.der) and blocks unsigned contexts.
 
 Temporary bypass for unsigned import (trusted):
@@ -53,7 +53,7 @@ Highest to lowest:
 1. `policy.forceSignedExports=true`
 2. CLI flag `--sign` / `--no-sign`
 3. `policy.signExports=true`
-4. `AGM_SIGN_EXPORT=1`
+4. `SMEM_SIGN_EXPORT=1`
 5. default: unsigned
 
 ## Help/version bypass

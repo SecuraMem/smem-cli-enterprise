@@ -9,7 +9,7 @@ function run(args, cwd) {
   return spawnSync('node', [cli, ...args], { encoding: 'utf8', cwd });
 }
 
-function mkTmp() { return fs.mkdtempSync(path.join(process.cwd(), 'agm-test-')); }
+function mkTmp() { return fs.mkdtempSync(path.join(process.cwd(), 'smem-test-')); }
 
 // Policy forceSignedExports should override --no-sign
 
@@ -25,7 +25,7 @@ test('export-context forceSignedExports overrides --no-sign', async () => {
     forceSignedExports: true
   };
   fs.writeFileSync(path.join(dir, '.antigoldfishmode','policy.json'), JSON.stringify(policy,null,2));
-  const outDir = path.join(dir, 'ctx.agmctx');
+  const outDir = path.join(dir, 'ctx.smemctx');
   const res = run(['export-context','--out', outDir, '--no-sign'], dir);
   assert.equal(res.status, 0, 'export should succeed');
   const sig = path.join(outDir,'signature.bin');

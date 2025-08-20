@@ -8,7 +8,7 @@ import { pathToFileURL } from 'node:url';
 const moduleUrl = pathToFileURL(path.resolve('dist/utils/PolicyBroker.js')).href;
 const { PolicyBroker } = await import(moduleUrl);
 
-function withTempDir(prefix = 'agm-test-') {
+function withTempDir(prefix = 'smem-test-') {
   const dir = fs.mkdtempSync(path.join(process.cwd(), prefix));
   return dir;
 }

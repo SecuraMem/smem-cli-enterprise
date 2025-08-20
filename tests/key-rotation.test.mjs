@@ -9,7 +9,7 @@ function run(args, cwd) {
   return spawnSync('node', [cli, ...args], { encoding: 'utf8', cwd });
 }
 
-function mkTmp() { return fs.mkdtempSync(path.join(process.cwd(), 'agm-test-')); }
+function mkTmp() { return fs.mkdtempSync(path.join(process.cwd(), 'smem-test-')); }
 
 test('key rotate produces new keyId and export embeds keyId', async () => {
   const dir = mkTmp();
@@ -24,7 +24,7 @@ test('key rotate produces new keyId and export embeds keyId', async () => {
   const m = status2.stdout.match(/keyId: (\w{16})/);
   assert.ok(m, 'keyId not printed');
   const keyId = m[1];
-  const outDir = path.join(dir,'ctx.agmctx');
+  const outDir = path.join(dir,'ctx.smemctx');
   const exp = run(['export-context','--out', outDir, '--sign'], dir);
   assert.equal(exp.status, 0, 'export failed');
   const manifest = JSON.parse(fs.readFileSync(path.join(outDir,'manifest.json'),'utf8'));

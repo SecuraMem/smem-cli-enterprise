@@ -1,13 +1,13 @@
 # Receipts Schema
 
-AntiGoldfishMode emits local-only JSON receipts for most commands when `--json` is used and always writes a compact receipt file to the journal directory.
+Securamem emits local-only JSON receipts for most commands when `--json` is used and always writes a compact receipt file to the journal directory.
 
 This document describes the fields so tools and scripts can consume them safely.
 
 ## Location
 
 - Live print: add `--json` to any command to print the receipt to stdout
-- Saved files: `.antigoldfishmode/journal/<YYYY-MM>/<receiptId>.json`
+- Saved files: `.securamem/journal/<YYYY-MM>/<receiptId>.json`
 
 ## Envelope
 
@@ -79,7 +79,7 @@ Minimal success:
   "success": true,
   "timestamp": "2025-08-10T12:34:56.789Z",
   "result": {
-    "project": {"path": "C:/repo", "dbPath": "C:/repo/.antigoldfishmode/memory.db"},
+    "project": {"path": "C:/repo", "dbPath": "C:/repo/.securamem/memory.db"},
     "memory": {"total": 42, "sizeMB": 1.23}
   }
 }

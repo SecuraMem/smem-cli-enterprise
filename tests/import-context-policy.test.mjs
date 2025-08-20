@@ -10,7 +10,7 @@ function run(args, cwd) {
 }
 
 function mkTmp() {
-  const dir = fs.mkdtempSync(path.join(process.cwd(), 'agm-test-'));
+  const dir = fs.mkdtempSync(path.join(process.cwd(), 'smem-test-'));
   return dir;
 }
 
@@ -35,8 +35,8 @@ test('import-context respects requireSignedContext and allow-unsigned with trust
   };
   fs.writeFileSync(path.join(dir, '.antigoldfishmode', 'policy.json'), JSON.stringify(policy, null, 2));
 
-  // Create a minimal unsigned .agmctx
-  const ctx = path.join(dir, 'ctx.agmctx');
+  // Create a minimal unsigned .smemctx
+  const ctx = path.join(dir, 'ctx.smemctx');
   fs.mkdirSync(ctx, { recursive: true });
   fs.writeFileSync(path.join(ctx, 'manifest.json'), JSON.stringify({ schemaVersion: 1, type: 'code', count: 0, createdAt: new Date().toISOString(), vectors: { dim: 0, count: 0 } }, null, 2));
   fs.writeFileSync(path.join(ctx, 'map.csv'), 'id,file,lang,line_start,line_end,symbol,type,timestamp\n');

@@ -59,7 +59,7 @@ Notes:
 - Keep changes minimal and local; prefer small PRs.
 - Include a short rationale in the PR description.
 - Do not add network calls or telemetry.
-- Keep branding and legacy compatibility intact (.securamem primary; legacy .antigoldfishmode readable; .smemctx default; .agmctx import-compatible).
+- Keep branding and legacy compatibility intact (.securamem primary; legacy .antigoldfishmode readable; .smemctx default; .smemctx import-compatible).
 
 ## Release process (maintainers)
 - Bump version in package.json (and ensure src/index.ts version stays in sync if printed).

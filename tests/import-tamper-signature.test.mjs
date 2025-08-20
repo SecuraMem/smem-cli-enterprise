@@ -9,7 +9,7 @@ function run(args, cwd) {
   return spawnSync('node', [cli, ...args], { encoding: 'utf8', cwd });
 }
 
-function mkTmp() { return fs.mkdtempSync(path.join(process.cwd(), 'agm-test-')); }
+function mkTmp() { return fs.mkdtempSync(path.join(process.cwd(), 'smem-test-')); }
 
 // Tamper with exported file to trigger checksum mismatch (exit code 4 takes precedence over signature)
 
@@ -27,7 +27,7 @@ test('import-context detects tampering (checksum mismatch exit code 4)', async (
     signExports: true
   };
   fs.writeFileSync(path.join(dir, '.antigoldfishmode','policy.json'), JSON.stringify(policy,null,2));
-  const outDir = path.join(dir, 'ctx.agmctx');
+  const outDir = path.join(dir, 'ctx.smemctx');
   // export with signing on (default) first init memory
   const res1 = run(['export-context','--out', outDir, '--sign'], dir);
   assert.equal(res1.status, 0, 'export should succeed');

@@ -53,8 +53,8 @@ See docs/ for full guides:
 
 - Primary working dir: .securamem (automatic migration is idempotent)
 - Legacy compatibility: reads from .antigoldfishmode when present
-- Bundles: default .smemctx; legacy .agmctx remains import‑compatible
-- Signing keys: prefers smem_ed25519; falls back to agm_ed25519 when needed
+- Bundles: default .smemctx; legacy .smemctx remains import‑compatible
+- Signing keys: prefers smem_ed25519; falls back to smem_ed25519 when needed
 
 ## Security model
 
@@ -75,7 +75,9 @@ Contact: securamem@gmail.com
 
 ## Legacy note
 
-Historical content for CodeContextPro (cctx) has been archived. See docs/archive/ for reference (e.g., archive/main-website-section.html, faq-section.html).
+Historical content for Securamem (smem) has been archived. See docs/archive/ for reference (e.g., archive/main-website-section.html, faq-section.html).
+
+<!-- delta test mutation -->
 
 <!-- delta test mutation -->
 

@@ -10,7 +10,7 @@ function run(args, cwd) {
 }
 
 function mkTmp() {
-  const dir = fs.mkdtempSync(path.join(process.cwd(), 'agm-test-'));
+  const dir = fs.mkdtempSync(path.join(process.cwd(), 'smem-test-'));
   return dir;
 }
 

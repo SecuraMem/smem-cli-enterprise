@@ -4,7 +4,7 @@ import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 
-function mkTmp() { return fs.mkdtempSync(path.join(process.cwd(), 'agm-test-')); }
+function mkTmp() { return fs.mkdtempSync(path.join(process.cwd(), 'smem-test-')); }
 
 function run(args, cwd) {
   const cli = path.resolve('dist/cli.js');

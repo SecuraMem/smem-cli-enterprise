@@ -9,7 +9,7 @@ function run(args, cwd) {
   return spawnSync('node', [cli, ...args], { encoding: 'utf8', cwd });
 }
 
-function mkTmp() { return fs.mkdtempSync(path.join(process.cwd(), 'agm-test-')); }
+function mkTmp() { return fs.mkdtempSync(path.join(process.cwd(), 'smem-test-')); }
 
 test('key list shows archived keys after rotation and prune removes old', async () => {
   const dir = mkTmp();

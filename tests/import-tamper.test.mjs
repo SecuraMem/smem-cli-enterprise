@@ -9,14 +9,14 @@ function run(args, cwd) {
   return spawnSync('node', [cli, ...args], { encoding: 'utf8', cwd });
 }
 
-function mkTmp() { return fs.mkdtempSync(path.join(process.cwd(), 'agm-test-')); }
+function mkTmp() { return fs.mkdtempSync(path.join(process.cwd(), 'smem-test-')); }
 
 test('import-context tamper yields exit 4 (checksum mismatch precedence)', async () => {
   const dir = mkTmp();
   fs.mkdirSync(path.join(dir, '.antigoldfishmode'), { recursive: true });
   const policy = { allowedCommands: ['help','--help','-h','version','--version','-V','export-context','import-context','policy'], allowedGlobs: ['**/*'], envPassthrough: ['PATH'], networkEgress: false, auditTrail: true, requireSignedContext: true, signExports: true };
   fs.writeFileSync(path.join(dir, '.antigoldfishmode', 'policy.json'), JSON.stringify(policy, null, 2));
-  const outDir = path.join(dir, 'ctx.agmctx');
+  const outDir = path.join(dir, 'ctx.smemctx');
   const res = run(['export-context', '--out', outDir, '--type', 'code'], dir);
   assert.equal(res.status, 0, 'export failed unexpectedly');
   const mf = path.join(outDir, 'manifest.json');

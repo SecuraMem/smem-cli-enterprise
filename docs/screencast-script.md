@@ -1,4 +1,4 @@
-# AGM Screencast Script and Shot List (Windows PowerShell)
+# SMEM Screencast Script and Shot List (Windows PowerShell)
 
 Purpose: record a concise, confidence‑building demo for developers (Show HN friendly). Target length: 2–3 minutes. Optional 60‑sec cut included.
 

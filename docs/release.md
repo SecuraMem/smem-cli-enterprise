@@ -1,6 +1,6 @@
 # Release Guide
 
-This document describes how to produce and verify release artifacts for AntiGoldfishMode.
+This document describes how to produce and verify release artifacts for Securamem.
 
 ## 1. Build
 ```powershell
@@ -28,7 +28,7 @@ Outputs under `.artifacts/`:
 ```powershell
 npm run release:artifacts:sign
 ```
-If `ssh-keygen -Y sign` (OpenSSH 8.2+) is available, creates detached `.sig` files beside each artifact using an ed25519 key stored at `.antigoldfishmode/keys/release_ed25519`.
+If `ssh-keygen -Y sign` (OpenSSH 8.2+) is available, creates detached `.sig` files beside each artifact using an ed25519 key stored at `.securamem/keys/release_ed25519`.
 
 ## 5. Verify checksums (user side)
 ```powershell

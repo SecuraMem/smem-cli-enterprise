@@ -67,7 +67,7 @@ function installOfflineGuards() {
 }
 
 installOfflineGuards();
-process.env.AGM_AIR_GAPPED = '1';
+process.env.SMEM_AIR_GAPPED = '1';
 process.env.NO_NETWORK = '1';
 
 // ---- Discover current test scripts (order matters) ----

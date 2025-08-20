@@ -47,12 +47,12 @@ test('smemctx export/import round-trip (unsigned)', async () => {
   assert.equal(r.status, 0, 'import-context failed');
 });
 
-test('legacy .agmctx import still works (if present)', async () => {
+test('legacy .smemctx import still works (if present)', async () => {
   const dir = mkTmp();
   fs.mkdirSync(path.join(dir, '.antigoldfishmode'), { recursive: true });
   const policy = { allowedCommands: ['import-context','help','--help','-h','version','--version','-V'], allowedGlobs:['**/*'], envPassthrough:['PATH'], networkEgress:false, auditTrail:false };
   fs.writeFileSync(path.join(dir, '.antigoldfishmode','policy.json'), JSON.stringify(policy, null, 2));
-  const fake = path.join(dir, 'legacy.agmctx');
+  const fake = path.join(dir, 'legacy.smemctx');
   fs.mkdirSync(fake, { recursive: true });
   fs.writeFileSync(path.join(fake,'manifest.json'), JSON.stringify({ schemaVersion:1, type:'code', count:0, vectors:{dim:0,count:0} }, null, 2));
   fs.writeFileSync(path.join(fake,'map.csv'), 'id,file,lang,line_start,line_end,symbol,type,timestamp,chunk_sha256\n');

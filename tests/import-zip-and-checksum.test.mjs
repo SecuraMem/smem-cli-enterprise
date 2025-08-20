@@ -9,14 +9,14 @@ function run(args, cwd) {
   return spawnSync('node', [cli, ...args], { encoding: 'utf8', cwd });
 }
 
-function mkTmp() { return fs.mkdtempSync(path.join(process.cwd(), 'agm-test-')); }
+function mkTmp() { return fs.mkdtempSync(path.join(process.cwd(), 'smem-test-')); }
 
 test('import-context handles zipped export with checksum verification', async () => {
   const dir = mkTmp();
   fs.mkdirSync(path.join(dir, '.antigoldfishmode'), { recursive: true });
   const policy = { allowedCommands: ['export-context','import-context','policy','help','--help','-h','version','--version','-V'], allowedGlobs: ['**/*'], envPassthrough: ['PATH'], networkEgress: false, auditTrail: true };
   fs.writeFileSync(path.join(dir, '.antigoldfishmode','policy.json'), JSON.stringify(policy,null,2));
-  const outZip = path.join(dir, 'ctx.agmctx.zip');
+  const outZip = path.join(dir, 'ctx.smemctx.zip');
   let res = run(['export-context','--out', outZip, '--zip'], dir);
   assert.equal(res.status, 0, 'zip export should succeed');
   assert.ok(fs.existsSync(outZip), 'zip file missing');
@@ -29,7 +29,7 @@ test('import-context detects checksum mismatch (exit 4)', async () => {
   fs.mkdirSync(path.join(dir, '.antigoldfishmode'), { recursive: true });
   const policy = { allowedCommands: ['export-context','import-context','policy','help','--help','-h','version','--version','-V'], allowedGlobs: ['**/*'], envPassthrough: ['PATH'], networkEgress: false, auditTrail: true };
   fs.writeFileSync(path.join(dir, '.antigoldfishmode','policy.json'), JSON.stringify(policy,null,2));
-  const outDir = path.join(dir, 'ctx.agmctx');
+  const outDir = path.join(dir, 'ctx.smemctx');
   let res = run(['export-context','--out', outDir], dir);
   assert.equal(res.status, 0, 'export should succeed');
   // Corrupt map.csv to break checksum

@@ -1,4 +1,4 @@
-# CodeContextPro Feature Catalog and Progress (for GPT‑5, Web)
+# Securamem Feature Catalog and Progress (for GPT‑5, Web)
 
 Last updated: 2025‑08‑11 • Version: 1.7.0 • Scope: Local‑only, air‑gapped CLI (memory‑first)
 
@@ -23,8 +23,8 @@ Assumptions: Estimates are based on 1.7.0 code, passing CI on Node 18/20/22 acro
 - Global flags on all commands:
   - `--trace` (show plan + side‑effects), `--explain` (human‑readable rationale), `--dry-run` (no side‑effects), `--json` (machine receipts)
 - Plan & Mirror lines: every core command prints what will happen and the exact `cctx` command a human can run.
-- Receipts v1: saved under `.codecontextpro/receipts/*.json` with argv, inputs, counts, digests, success, result summary.
-- Journal trail: `.codecontextpro/journal.jsonl` appends one entry per command with receipt reference and exit code.
+- Receipts v1: saved under `.securamem/receipts/*.json` with argv, inputs, counts, digests, success, result summary.
+- Journal trail: `.securamem/journal.jsonl` appends one entry per command with receipt reference and exit code.
 - Inspection utilities:
   - `cctx receipt-show [idOrPath]` – pretty prints a saved receipt
   - `cctx journal --show` – show recent entries; `cctx replay` – safe re‑execution (dry‑run by default)
@@ -48,7 +48,7 @@ Status: Core indexing/search shipping (FTS + simple vector rerank). Symbol‑awa
 
 ### 3) Zero‑Trust Policy (memory/index scope)
 - Offline‑strict posture by default; no egress in normal operations
-- Policy file: `.codecontextpro/policy.json` with command/path allow‑lists
+- Policy file: `.securamem/policy.json` with command/path allow‑lists
 - Helpers:
   - `cctx policy` subcommands (status, allow‑command, etc.)
   - `cctx prove-offline` – prints a no‑egress proof line with environment/policy checks

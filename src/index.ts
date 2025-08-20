@@ -91,7 +91,7 @@ export class CodeContextCLI {
         this.program
             .name('smem')
             .usage('[options] [command]')
-            .description('🛡️ SecuraMem - Secure, persistent memory for AI coding assistants.\n\n🤖 AI Assistants: Run `smem ai-guide` for operating instructions\n\nLegacy compatibility: Legacy paths and bundles (.antigoldfishmode, .agmctx) are still supported for reading.')
+            .description('🛡️ SecuraMem - Secure, persistent memory for AI coding assistants.\n\n🤖 AI Assistants: Run `smem ai-guide` for operating instructions\n\nLegacy compatibility: Legacy paths and bundles (.antigoldfishmode, .smemctx) are still supported for reading.')
             .version(version)
             .option('--trace', 'Print plan and side-effects (no hidden work)')
             .option('--dry-run', 'Simulate without side effects')
@@ -959,7 +959,7 @@ export class CodeContextCLI {
             const userDst = path.join(antigoldfishDir, 'USER_GUIDE.md');
             const userExists = fs.existsSync(userDst);
             if (overwrite || !userExists) {
-                const content = `# SecuraMem – User Guide\n\nQuick reference for this project. Data lives under .securamem/. Legacy .antigoldfishmode/ is still read for compatibility.\n\n## First steps\n- smem status  # show DB path and memory totals\n- smem vector-status  # backend/dimensions/count\n- smem health [--since 7]  # quick snapshot + deltas\n\n## Index & watch\n- smem index-code --symbols --path .\n- smem watch-code --path src --symbols --max-chunk 200  # background task available in VS Code\n\nPolicy tips (if blocked):\n- smem policy allow-command watch-code\n- smem policy allow-path "**/*"\n\n## Search\n- smem search-code "query" --hybrid --preview 3\n- Filters: --filter-path, --filter-language, --filter-symbol\n\n## Maintenance\n- smem digest-cache --list --limit 20\n- smem reindex-file <file> [--symbols]\n- smem reindex-folder <folder> [--symbols] [--include ...] [--exclude ...]\n- smem gc --prune-vectors --drop-stale-digests --vacuum\n\n## Air-gapped export\n- smem export-context --out ./.securamem/ctx.smemctx --type code [--sign]  # legacy .agmctx supported on import\n- smem import-context ./.securamem/ctx.smemctx\n\n## AI guide\n- smem ai-guide  # prints AI operating instructions\n- See also .securamem/AI_ASSISTANT_GUIDE.md\n\nReceipts: .securamem/receipts/*.json\nJournal: .securamem/journal.jsonl\nPolicy: .securamem/policy.json\n`;
+                const content = `# SecuraMem – User Guide\n\nQuick reference for this project. Data lives under .securamem/. Legacy .antigoldfishmode/ is still read for compatibility.\n\n## First steps\n- smem status  # show DB path and memory totals\n- smem vector-status  # backend/dimensions/count\n- smem health [--since 7]  # quick snapshot + deltas\n\n## Index & watch\n- smem index-code --symbols --path .\n- smem watch-code --path src --symbols --max-chunk 200  # background task available in VS Code\n\nPolicy tips (if blocked):\n- smem policy allow-command watch-code\n- smem policy allow-path "**/*"\n\n## Search\n- smem search-code "query" --hybrid --preview 3\n- Filters: --filter-path, --filter-language, --filter-symbol\n\n## Maintenance\n- smem digest-cache --list --limit 20\n- smem reindex-file <file> [--symbols]\n- smem reindex-folder <folder> [--symbols] [--include ...] [--exclude ...]\n- smem gc --prune-vectors --drop-stale-digests --vacuum\n\n## Air-gapped export\n- smem export-context --out ./.securamem/ctx.smemctx --type code [--sign]  # legacy .smemctx supported on import\n- smem import-context ./.securamem/ctx.smemctx\n\n## AI guide\n- smem ai-guide  # prints AI operating instructions\n- See also .securamem/AI_ASSISTANT_GUIDE.md\n\nReceipts: .securamem/receipts/*.json\nJournal: .securamem/journal.jsonl\nPolicy: .securamem/policy.json\n`;
                 try { fs.writeFileSync(userDst, content); console.log(chalk.green('✅ Wrote User guide to .securamem/USER_GUIDE.md')); } catch {}
             }
         } catch {}
@@ -1182,7 +1182,7 @@ export class CodeContextCLI {
             if (!fs.existsSync(templateDir)) {
                 // Try with require.resolve for npm global installs
                 try {
-                    const packageRoot = path.dirname(require.resolve('antigoldfishmode/package.json'));
+                    const packageRoot = path.dirname(require.resolve('securamem/package.json'));
                     templateDir = path.join(packageRoot, '.vscode-templates');
                 } catch (error) {
                     console.log(chalk.yellow('⚠️ VSCode templates not found, skipping VSCode integration'));
@@ -1214,11 +1214,11 @@ export class CodeContextCLI {
                 console.log(chalk.green('✅ VSCode keybindings configured (Ctrl+Shift+M, Ctrl+Shift+R)'));
             }
 
-            // Copy snippets: keep legacy agm.* for compatibility and add smem.*
-            const snippetsLegacyTemplate = path.join(templateDir, 'agm.code-snippets');
+            // Copy snippets: keep legacy smem.* for compatibility and add smem.*
+            const snippetsLegacyTemplate = path.join(templateDir, 'smem.code-snippets');
             const snippetsSmemTemplate = path.join(templateDir, 'smem.code-snippets');
             const snippetsSmemDestination = path.join(vscodeDir, 'smem.code-snippets');
-            const snippetsLegacyDestination = path.join(vscodeDir, 'agm.code-snippets');
+            const snippetsLegacyDestination = path.join(vscodeDir, 'smem.code-snippets');
             if (fs.existsSync(snippetsSmemTemplate)) {
                 try { fs.copyFileSync(snippetsSmemTemplate, snippetsSmemDestination); } catch {}
             }
@@ -1226,7 +1226,7 @@ export class CodeContextCLI {
                 try { fs.copyFileSync(snippetsLegacyTemplate, snippetsLegacyDestination); } catch {}
             }
             if (fs.existsSync(snippetsSmemTemplate) || fs.existsSync(snippetsLegacyTemplate)) {
-                console.log(chalk.green('✅ VSCode snippets configured (type "smem-"; legacy "agm-" remains available)'));
+                console.log(chalk.green('✅ VSCode snippets configured (type "smem-"; legacy "smem-" remains available)'));
             }
 
         } catch (error) {
@@ -1269,7 +1269,7 @@ export class CodeContextCLI {
                 if (!existingJson.tasks) existingJson.tasks = [];
                 if (!existingJson.inputs) existingJson.inputs = [];
 
-                // Add AGM tasks (avoid duplicates)
+                // Add SMEM tasks (avoid duplicates)
                 if (templateJson.tasks) {
                     templateJson.tasks.forEach((task: any) => {
                         const exists = existingJson.tasks.some((existingTask: any) =>
@@ -1281,7 +1281,7 @@ export class CodeContextCLI {
                     });
                 }
 
-                // Add AGM inputs (avoid duplicates)
+                // Add SMEM inputs (avoid duplicates)
                 if (templateJson.inputs) {
                     templateJson.inputs.forEach((input: any) => {
                         const exists = existingJson.inputs.some((existingInput: any) =>
@@ -1298,7 +1298,7 @@ export class CodeContextCLI {
             } else if (type === 'settings') {
                 // Merge settings (template takes precedence for SecuraMem/legacy-specific settings)
                 Object.keys(templateJson).forEach(key => {
-                    if (key.startsWith('smem.') || key.includes('SMEM') || key.startsWith('agm.') || key.includes('AGM') || key === 'search.exclude' || key === 'files.associations') {
+                    if (key.startsWith('smem.') || key.includes('SMEM') || key.startsWith('smem.') || key.includes('SMEM') || key === 'search.exclude' || key === 'files.associations') {
                         existingJson[key] = templateJson[key];
                     }
                 });
@@ -1357,7 +1357,7 @@ export class CodeContextCLI {
         }
     }
 
-    // ----- context export/import (.smemctx primary, .agmctx compatible) -----
+    // ----- context export/import (.smemctx primary, .smemctx compatible) -----
     private async handleExportContext(opts: any): Promise<void> {
     const outPath = path.resolve(process.cwd(), opts.out || 'context.smemctx');
         const type = String(opts.type || 'code');
@@ -1384,7 +1384,7 @@ export class CodeContextCLI {
             if (pol.forceSignedExports) { wantSign = true; signReason = 'force'; }
             else if (typeof opts.sign === 'boolean') { wantSign = !!opts.sign; signReason = 'flag'; }
             else if (pol.signExports) { wantSign = true; signReason = 'policy'; }
-            else if (process.env.SMEM_SIGN_EXPORT === '1' || process.env.AGM_SIGN_EXPORT === '1') { wantSign = true; signReason = 'env'; }
+            else if (process.env.SMEM_SIGN_EXPORT === '1' || process.env.SMEM_SIGN_EXPORT === '1') { wantSign = true; signReason = 'env'; }
             else { wantSign = false; }
             if (pol.forceSignedExports && opts.sign === false) {
                 console.log(chalk.yellow('ℹ️ --no-sign ignored: policy.forceSignedExports=true'));
@@ -1508,7 +1508,7 @@ export class CodeContextCLI {
             // keyId will be injected below if signing
             fs.writeFileSync(path.join(tmpDir, 'manifest.json'), JSON.stringify(manifest, null, 2));
 
-            // Optional signing (ED25519). Prefer .securamem/keys/smem_ed25519.*, fallback to legacy .antigoldfishmode/keys/agm_ed25519.*
+            // Optional signing (ED25519). Prefer .securamem/keys/smem_ed25519.*, fallback to legacy .antigoldfishmode/keys/smem_ed25519.*
             if (wantSign) {
                 this.nudgePro('sign', 'Signed exports (bundle + signature) are a Pro convenience feature. Proceeding with local signing.');
                 try {
@@ -1516,7 +1516,7 @@ export class CodeContextCLI {
                     const legacyDir = path.join(process.cwd(), '.antigoldfishmode', 'keys');
                     const candidates = [
                         { dir: newDir, pub: 'smem_ed25519.pub', key: 'smem_ed25519.key' },
-                        { dir: legacyDir, pub: 'agm_ed25519.pub', key: 'agm_ed25519.key' }
+                        { dir: legacyDir, pub: 'smem_ed25519.pub', key: 'smem_ed25519.key' }
                     ];
                     let useDir = candidates.find(c => fs.existsSync(path.join(c.dir, c.pub)) && fs.existsSync(path.join(c.dir, c.key)))?.dir || newDir;
                     if (!fs.existsSync(useDir)) fs.mkdirSync(useDir, { recursive: true });
@@ -1581,7 +1581,7 @@ export class CodeContextCLI {
                 const zipTarget = (() => {
                     if (outPath.endsWith('.zip')) return outPath;
                     if (outPath.endsWith('.smemctx')) return outPath + '.zip';
-                    if (outPath.endsWith('.agmctx')) return outPath + '.zip';
+                    if (outPath.endsWith('.smemctx')) return outPath + '.zip';
                     // default to .smemctx.zip when no known extension
                     return outPath + '.smemctx.zip';
                 })();
@@ -1651,7 +1651,7 @@ export class CodeContextCLI {
     private async handleKeyStatus(): Promise<void> {
         try {
             const primary = path.join(process.cwd(), '.securamem', 'keys', 'smem_ed25519.pub');
-            const legacy = path.join(process.cwd(), '.antigoldfishmode', 'keys', 'agm_ed25519.pub');
+            const legacy = path.join(process.cwd(), '.antigoldfishmode', 'keys', 'smem_ed25519.pub');
             const pubKeyPath = fs.existsSync(primary) ? primary : legacy;
             if (!fs.existsSync(pubKeyPath)) {
                 console.log(chalk.yellow('ℹ️ No signing key present (will auto-generate on first signed export).'));
@@ -1708,7 +1708,7 @@ export class CodeContextCLI {
         try {
             const newDir = path.join(process.cwd(), '.securamem', 'keys');
             const legacyDir = path.join(process.cwd(), '.antigoldfishmode', 'keys');
-            const pubKeyPath = fs.existsSync(path.join(newDir,'smem_ed25519.pub')) ? path.join(newDir,'smem_ed25519.pub') : path.join(legacyDir,'agm_ed25519.pub');
+            const pubKeyPath = fs.existsSync(path.join(newDir,'smem_ed25519.pub')) ? path.join(newDir,'smem_ed25519.pub') : path.join(legacyDir,'smem_ed25519.pub');
             console.log(chalk.cyan('🔑 Keyring'));
             if (fs.existsSync(pubKeyPath)) {
                 try {
@@ -2199,3 +2199,5 @@ if (require.main === module) { main(process.argv); }
 // DIFF TEST MUTATION 1755206689748
 
 // DIFF TEST MUTATION 1755206913732
+
+// DIFF TEST MUTATION 1755649679158

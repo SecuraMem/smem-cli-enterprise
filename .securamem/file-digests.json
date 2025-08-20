@@ -26,7 +26,7 @@
   "engine/HybridSearchEngine.ts": "b00513077f16efa3c104048e767b3382855d0c70ceeebda29579b75b8a4f1b7e",
   "engine/MemoryCache.ts": "e9339acca08f15125e38dbf5edad5c9089af79f2e2ab96d73b29d9c5551381e6",
   "engine/VectorEmbeddings.ts": "75d80ac0faa05cde6549f71b0f3050025418ff9849f4b50485ca594903ccfbc0",
-  "index.ts": "f5a85a4cb290bd594c998f1a2cbefd8fd917158ea782c6bc5c7878215d2c9e1b",
+  "index.ts": "2e831953caf9fad780dd201789c62e69a0340c335c640d6b0bd12ed5704e3834",
   "index.ts.bak-test": "2c59cd4091ca32e4c16c2112c870e1a3e9b63400429f0eed684ecf30896f939e",
   "services/IndexingService.ts": "94b5191de656f5535ab7111f7c1fcd351d1cc539d194ffe8af06782ffda15756",
   "utils/Paths.ts": "c9a3eec4474fb19adc1cb3d49554d52d71978a13e431da182791e22f2c4e5118",
