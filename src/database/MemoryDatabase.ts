@@ -485,27 +485,11 @@ export class MemoryDatabase {
                 await this.migrateConversationTable();
             } else {
                 console.log('✅ Database schema is up to date');
-
-                // Ensure vector table exists for Stage 1 hybrid search
-                this.db.exec(`
-                    CREATE TABLE IF NOT EXISTS memory_vectors (
-                        id INTEGER PRIMARY KEY,
-                        dim INTEGER NOT NULL,
-                        vector BLOB NOT NULL,
-                        FOREIGN KEY (id) REFERENCES memories(id) ON DELETE CASCADE
-                    );
-                `);
-
-                // Ensure file_digests table exists for incremental indexing cache
-                this.db.exec(`
-                    CREATE TABLE IF NOT EXISTS file_digests (
-                        file TEXT PRIMARY KEY,
-                        digest TEXT NOT NULL,
-                        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-                    );
-                `);
-
             }
+
+            // Always ensure core tables exist regardless of database state
+            console.log('🔄 Ensuring all core tables exist...');
+            await this.ensureCoreTables();
         } catch (error) {
             console.log('🔄 Database migration needed, recreating conversation tables...');
             await this.recreateConversationTables();
@@ -588,6 +572,87 @@ export class MemoryDatabase {
 
         await this.addConversationTables();
         console.log('✅ Conversation tables recreated with latest schema');
+    }
+
+    /**
+     * Ensure all core tables exist (idempotent)
+     */
+    private async ensureCoreTables(): Promise<void> {
+        if (!this.db) {
+            throw new Error('Database not initialized');
+        }
+
+        // Create memories table if it doesn't exist
+        this.db.exec(`
+            -- Memories table with full-text search support
+            CREATE TABLE IF NOT EXISTS memories (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                content TEXT NOT NULL,
+                context TEXT NOT NULL DEFAULT 'general',
+                type TEXT NOT NULL DEFAULT 'general',
+                tags TEXT DEFAULT '[]',
+                metadata TEXT DEFAULT '{}',
+                content_hash TEXT NOT NULL UNIQUE,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+
+        // Create FTS index if it doesn't exist
+        this.db.exec(`
+            -- Full-text search index for content
+            CREATE VIRTUAL TABLE IF NOT EXISTS memories_fts USING fts5(
+                content,
+                context,
+                tags,
+                content='memories',
+                content_rowid='id'
+            );
+        `);
+
+        // Create vector table if it doesn't exist
+        this.db.exec(`
+            -- Optional vector table for local embeddings (Stage 1)
+            CREATE TABLE IF NOT EXISTS memory_vectors (
+                id INTEGER PRIMARY KEY,
+                dim INTEGER NOT NULL,
+                vector BLOB NOT NULL,
+                FOREIGN KEY (id) REFERENCES memories(id) ON DELETE CASCADE
+            );
+        `);
+
+        // Create file_digests table if it doesn't exist
+        this.db.exec(`
+            CREATE TABLE IF NOT EXISTS file_digests (
+                file TEXT PRIMARY KEY,
+                digest TEXT NOT NULL,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+
+        // Ensure triggers exist
+        this.db.exec(`
+            -- Triggers to maintain FTS index
+            CREATE TRIGGER IF NOT EXISTS memories_fts_insert AFTER INSERT ON memories
+            BEGIN
+                INSERT INTO memories_fts(rowid, content, context, tags)
+                VALUES (new.id, new.content, new.context, new.tags);
+            END;
+
+            CREATE TRIGGER IF NOT EXISTS memories_fts_delete AFTER DELETE ON memories
+            BEGIN
+                DELETE FROM memories_fts WHERE rowid = old.id;
+            END;
+
+            CREATE TRIGGER IF NOT EXISTS memories_fts_update AFTER UPDATE ON memories
+            BEGIN
+                DELETE FROM memories_fts WHERE rowid = old.id;
+                INSERT INTO memories_fts(rowid, content, context, tags)
+                VALUES (new.id, new.content, new.context, new.tags);
+            END;
+        `);
+
+        console.log('✅ Core database tables ensured');
     }
 
     /**
