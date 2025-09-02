@@ -131,6 +131,25 @@ export class MemoryEngine2 {
         // If provided, pass sqlite-vss lib path to pool so new connections attempt to load it
         if (this.options.vectorLibPath) {
             this.connectionPool.setVectorExtensionPath?.(this.options.vectorLibPath);
+        } else {
+            // Auto-detect prebundled sqlite-vec native extension under .securamem/sqlite-vss/<platform>-<arch>/
+            try {
+                console.log('🔍 Auto-detecting vector extension...');
+                const platform = process.platform; // 'win32' | 'darwin' | 'linux'
+                const arch = process.arch; // 'x64' | 'arm64' ...
+                const ext = platform === 'win32' ? 'dll' : platform === 'darwin' ? 'dylib' : 'so';
+                const candidate = path.join(this.projectPath, '.securamem', 'sqlite-vss', `${platform}-${arch}`, `vss0.${ext}`);
+                console.log(`🔍 Looking for vector extension at: ${candidate}`);
+                if (fs.existsSync(candidate)) {
+                    this.connectionPool.setVectorExtensionPath(candidate);
+                    console.log(`✅ Detected sqlite-vec extension at ${candidate}; will attempt to load vector backend`);
+                } else {
+                    console.log(`⚠️ No vector extension found at ${candidate}`);
+                }
+            } catch (e) {
+                console.log('❌ Error during vector extension detection:', e instanceof Error ? e.message : String(e));
+                // ignore detection errors; continue with JS fallback
+            }
         }
 
         // Initialize intelligent cache

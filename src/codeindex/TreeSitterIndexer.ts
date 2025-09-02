@@ -34,30 +34,43 @@ export class TreeSitterIndexer {
 
     private initializeParsers(): void {
         try {
-            // Dynamically import Tree-sitter modules
+            // Dynamically import Tree-sitter core
             const Parser = require('tree-sitter');
-            
-            // Language parsers
-            const TypeScript = require('tree-sitter-typescript').typescript;
-            const JavaScript = require('tree-sitter-javascript');
-            const Python = require('tree-sitter-python');
+            // Attempt to load individual language bindings -- tolerate missing ones
+            try {
+                const tsLang = require('tree-sitter-typescript').typescript;
+                const tsParser = new Parser();
+                tsParser.setLanguage(tsLang);
+                this.parsers.set('typescript', tsParser);
+                // also support tsx file inference via same parser
+            } catch (e) {
+                // ignore -- typescript parser not available
+            }
+            try {
+                const jsLang = require('tree-sitter-javascript');
+                const jsParser = new Parser();
+                // some packages export the language directly, others as .language
+                const langObj = (jsLang && jsLang.javascript) ? jsLang.javascript : jsLang;
+                jsParser.setLanguage(langObj);
+                this.parsers.set('javascript', jsParser);
+            } catch (e) {
+                // ignore -- javascript parser not available
+            }
+            try {
+                const pyLang = require('tree-sitter-python');
+                const pyParser = new Parser();
+                pyParser.setLanguage(pyLang);
+                this.parsers.set('python', pyParser);
+            } catch (e) {
+                // ignore -- python parser not available
+            }
 
-            // Create parser instances
-            const tsParser = new Parser();
-            tsParser.setLanguage(TypeScript);
-            this.parsers.set('typescript', tsParser);
-
-            const jsParser = new Parser();
-            jsParser.setLanguage(JavaScript);
-            this.parsers.set('javascript', jsParser);
-
-            const pyParser = new Parser();
-            pyParser.setLanguage(Python);
-            this.parsers.set('python', pyParser);
-
-            this.treeSitterAvailable = true;
-        } catch (error) {
-            // Tree-sitter not available, will use fallback
+            this.treeSitterAvailable = this.parsers.size > 0;
+            if (!this.treeSitterAvailable) {
+                // nothing loaded
+            }
+        } catch (coreErr) {
+            // Tree-sitter core not present; keep treeSitterAvailable=false
             this.treeSitterAvailable = false;
         }
     }
@@ -76,6 +89,17 @@ export class TreeSitterIndexer {
             return [];
         }
 
+        // Defensive: skip transpiled / bundled / dependency files that commonly
+        // break Tree-sitter or are not useful for symbol-level indexing.
+        const lower = rel.toLowerCase();
+        if (lower.startsWith('dist/') || lower.startsWith('build/') || lower.startsWith('lib/') || lower.startsWith('node_modules/') || lower.endsWith('.min.js')) {
+            // Return fallback chunk without attempting to parse
+            return [{
+                text: content,
+                meta: { file: rel, language: inferLanguage(filePath), lineStart: 1, lineEnd: content.split(/\r?\n/).length, strategy: 'treesitter-fallback' }
+            }];
+        }
+
         const language = inferLanguage(filePath);
         const lines = content.split(/\r?\n/);
 
@@ -84,8 +108,8 @@ export class TreeSitterIndexer {
             try {
                 return this.parseWithTreeSitter(content, rel, language, lines);
             } catch (error) {
-                // Fall back to heuristic if Tree-sitter fails
-                console.warn(`Tree-sitter parsing failed for ${rel}, falling back to heuristics`);
+                // Fall back to heuristic if Tree-sitter fails; include error for debug tracing
+                console.warn(`Tree-sitter parsing failed for ${rel}, falling back to heuristics. Error: ${error instanceof Error ? error.message : String(error)}`);
             }
         }
 
@@ -111,7 +135,15 @@ export class TreeSitterIndexer {
         const parser = this.parsers.get(language);
         if (!parser) return [];
 
-        const tree = parser.parse(content);
+        // Use input function approach to handle files >32KB
+        // Direct string parsing fails with "Invalid argument" for large files
+        const tree = parser.parse((index: number, position: any) => {
+            if (index < content.length) {
+                // Return chunks of reasonable size (8KB) for efficiency
+                return content.substring(index, Math.min(index + 8192, content.length));
+            }
+            return null;
+        });
         const chunks: TreeSitterSymbolChunk[] = [];
 
         // Extract symbols based on language

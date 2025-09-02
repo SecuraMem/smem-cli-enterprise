@@ -52,9 +52,14 @@ export class MemoryEngine {
      * Phase 1 Sprint 1.3: Real database initialization
      */
     async initialize(): Promise<void> {
-        if (this.initialized) return;
+        if (this.initialized) {
+            console.log('🔄 Memory engine already initialized');
+            return;
+        }
         
         try {
+            console.log('🚀 Initializing memory engine with database path:', this.dbPath);
+            console.log('📁 Current working directory:', process.cwd());
             await this.database.initialize();
             this.initialized = true;
             console.log('✅ Memory engine initialized with SQLite database');
@@ -287,13 +292,51 @@ export class MemoryEngine {
      * Vector backend info for CLI (fallback implementation).
      * Reports current backend and basic stats via MemoryDatabase.
      */
-    async getVectorBackendInfo(): Promise<{ backend: string; dimensions: number; count: number; note?: string }> {
+    async getVectorBackendInfo(): Promise<{ backend: string; dimensions: number; count: number; note?: string; extensionPath?: string }> {
+        console.log('🟢 getVectorBackendInfo called!');
         await this.initialize();
+        
+        try {
+            // Try to use unified vector backend detection
+            console.log('🔍 Attempting direct vector backend detection...');
+            const { UnifiedVectorBackend } = await import('./engine/vector/UnifiedVectorBackend.js');
+            
+            // Get a fresh database connection for backend testing
+            const testBackend = UnifiedVectorBackend.tryLoad((this.database as any).db, this.projectPath);
+            
+            if (testBackend.isAvailable()) {
+                console.log(`✅ Direct detection successful: ${testBackend.getBackendType()}`);
+                
+                // Get dimensions from fallback table for compatibility
+                let dimensions = 0;
+                let count = testBackend.count();
+                
+                try {
+                    const row = (this.database as any).db.prepare('SELECT COALESCE(MAX(dim), 0) as dim FROM memory_vectors').get() as any;
+                    dimensions = row?.dim || 0;
+                } catch {
+                    dimensions = 0;
+                }
+                
+                return {
+                    backend: testBackend.getBackendType(),
+                    dimensions,
+                    count,
+                    extensionPath: testBackend.getExtensionPath()
+                };
+            }
+        } catch (e) {
+            console.log('⚠️ Direct vector backend detection failed:', e instanceof Error ? e.message : String(e));
+        }
+        
         if ((this as any).vectorIndex && typeof (this as any).vectorIndex.stats === 'function') {
             // In case a richer engine is wired later, defer to it
             const s = await (this as any).vectorIndex.stats();
             return { backend: s.backend, dimensions: s.dimensions, count: s.count };
         }
+        
+        // Final fallback: query the database layer
+        console.log('📊 Using database fallback for vector stats...');
         return await (this.database as any).vectorStats();
     }
 

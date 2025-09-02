@@ -24,12 +24,24 @@ export class CodeIndexer {
     // very small globbing: ** for any dirs; * for filename part
     // convert to Regex conservatively
     return patterns.some((p) => {
-      const re = new RegExp('^' + p
-        .replace(/[.+^${}()|[\]\\]/g, '\\$&')
+      const pattern = p.replace(/[.+^${}()|[\\]\\]/g, '\\$&')
+        .replace(/^\*\//, '(?:.*/)?') // leading **/ -> optional path prefix
+        .replace(/\/\*\*\//g, '/(?:.*/)?')
         .replace(/\*\*/g, '.*')
-        .replace(/\*/g, '[^/]*') + '$');
+        .replace(/\*/g, '[^/]*');
+      const re = new RegExp('^' + pattern + '$');
       return re.test(rel.replace(/\\/g, '/'));
     });
+  }
+
+  // Convert a simple glob pattern (supports ** and *) into a RegExp string.
+  // Ensures patterns like "**/dist/**" also match top-level "dist/..." paths.
+  private patternToRegexString(p: string): string {
+    return p.replace(/[.+^${}()|[\\]\\]/g, '\\$&')
+      .replace(/^\*\//, '(?:.*/)?')
+      .replace(/\/\*\*\//g, '/(?:.*/)?')
+      .replace(/\*\*/g, '.*')
+      .replace(/\*/g, '[^/]*');
   }
 
   private detectLanguage(file: string): string | undefined {
@@ -46,7 +58,7 @@ export class CodeIndexer {
   private* walkFiles(root: string, opts: IndexOptions): Generator<string> {
     const include = opts.include && opts.include.length ? opts.include : ['**/*'];
     const exclude = opts.exclude && opts.exclude.length ? opts.exclude : [
-      '**/node_modules/**', '**/.git/**', '**/dist/**', '**/build/**', '**/.next/**', '**/.cache/**'
+      '**/node_modules/**', 'node_modules/**', '**/.git/**', '.git/**', '**/dist/**', 'dist/**', '**/build/**', 'build/**', '**/.next/**', '.next/**', '**/.cache/**', '.cache/**'
     ];
 
     const stack = [root];
@@ -63,9 +75,7 @@ export class CodeIndexer {
         } else if (e.isFile()) {
           // must match include and not excluded
           const included = include.some(p => {
-            const pattern = p.replace(/[.+^${}()|[\]\\]/g, '\\$&')
-              .replace(/\*\*/g, '.*')
-              .replace(/\*/g, '[^/]*');
+            const pattern = this.patternToRegexString(p);
             const re = new RegExp('^' + pattern + '$');
             if (re.test(relUnix)) return true;
             // Special case: pattern like **/* should also match root-level files (no slash)

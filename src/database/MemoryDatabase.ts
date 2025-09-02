@@ -360,13 +360,21 @@ export class MemoryDatabase {
             this.db = new Database(this.dbPath);
 
 
-            // Try to load sqlite-vss extension if present (Stage 2)
-            const { SqliteVSS } = await import('../engine/vector/SqliteVSS.js');
-            const vss = SqliteVSS.tryLoad(this.db, process.cwd(), 'memories_vss');
-            if (vss.isAvailable()) {
-                // Ensure VSS table exists with expected dimension lazily later
-                // Store handle for later use via closure on this.db methods
-                (this as any)._vss = vss;
+            // Try to load unified vector backend (Stage 2)
+            try {
+                console.log('🔍 Attempting to import UnifiedVectorBackend...');
+                const { UnifiedVectorBackend } = await import('../engine/vector/UnifiedVectorBackend.js');
+                console.log('✅ UnifiedVectorBackend module imported successfully');
+                const vectorBackend = UnifiedVectorBackend.tryLoad(this.db, process.cwd());
+                if (vectorBackend.isAvailable()) {
+                    console.log(`✅ Vector backend available: ${vectorBackend.getBackendType()}`);
+                    // Store handle for later use
+                    (this as any)._vectorBackend = vectorBackend;
+                } else {
+                    console.log('⚠️ No native vector backend available - using local-js fallback');
+                }
+            } catch (e) {
+                console.log('❌ Failed to import or load vector backend:', e instanceof Error ? e.message : String(e));
             }
 
             // Enable foreign key constraints
@@ -1439,23 +1447,41 @@ export class MemoryDatabase {
     async vectorStats(): Promise<{ backend: string; dimensions: number; count: number; note?: string }> {
         if (!this.db) throw new Error('Database not initialized');
 
-        // Detect advanced vector backend availability (sqlite-vss)
-        const vss = (this as any)._vss as (undefined | { isAvailable: () => boolean });
-        const backend = (vss && vss.isAvailable && vss.isAvailable()) ? 'sqlite-vss' : 'local-js';
+        // Detect advanced vector backend availability
+        const vectorBackend = (this as any)._vectorBackend as (undefined | { isAvailable: () => boolean; getBackendType: () => string; getExtensionPath: () => string | undefined; count: () => number });
+        const backendType = vectorBackend?.isAvailable() ? vectorBackend.getBackendType() : 'local-js';
+        const extensionPath = vectorBackend?.getExtensionPath();
 
-        // Ensure the fallback storage table exists and compute basic stats
-        this.ensureVectorTable();
+        // Get vector stats from native backend if available, otherwise fallback table
         let count = 0;
         let dimensions = 0;
-        try {
-            const row = this.db.prepare('SELECT COUNT(*) as cnt, COALESCE(MAX(dim), 0) as dim FROM memory_vectors').get() as any;
-            count = row?.cnt || 0;
-            dimensions = row?.dim || 0;
-        } catch {
-            // If anything goes wrong, keep defaults
+        
+        if (vectorBackend?.isAvailable()) {
+            // Get count from native backend
+            count = vectorBackend.count();
+            // For dimensions, check the fallback table for now (TODO: improve this)
+            try {
+                const row = this.db.prepare('SELECT COALESCE(MAX(dim), 0) as dim FROM memory_vectors').get() as any;
+                dimensions = row?.dim || 0;
+            } catch {
+                dimensions = 0;
+            }
+        } else {
+            // Ensure fallback storage table exists and compute basic stats
+            this.ensureVectorTable();
+            try {
+                const row = this.db.prepare('SELECT COUNT(*) as cnt, COALESCE(MAX(dim), 0) as dim FROM memory_vectors').get() as any;
+                count = row?.cnt || 0;
+                dimensions = row?.dim || 0;
+            } catch {
+                // If anything goes wrong, keep defaults
+            }
         }
 
-        const note = backend === 'sqlite-vss' ? undefined : 'Advanced vector backend not enabled; using local-js fallback';
-        return { backend, dimensions, count, ...(note ? { note } : {}) };
+        const note = backendType === 'local-js' ? 'Advanced vector backend not enabled; using local-js fallback' : undefined;
+        const result: any = { backend: backendType, dimensions, count };
+        if (note) result.note = note;
+        if (extensionPath) result.extensionPath = extensionPath;
+        return result;
     }
 }
