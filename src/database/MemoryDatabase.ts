@@ -473,18 +473,18 @@ export class MemoryDatabase {
                 // Old database without conversations table
                 console.log('🔄 Adding conversation tracking to existing database...');
                 await this.addConversationTables();
-                return;
-            }
-
-            // Check if conversations table has the correct schema
-            const conversationsInfo = this.db.prepare("PRAGMA table_info(conversations)").all();
-            const hasCorrectSchema = conversationsInfo.some((col: any) => col.name === 'summary');
-
-            if (!hasCorrectSchema) {
-                console.log('🔄 Migrating database to latest schema...');
-                await this.migrateConversationTable();
+                // Continue to ensure core tables after adding conversations
             } else {
-                console.log('✅ Database schema is up to date');
+                // Check if conversations table has the correct schema
+                const conversationsInfo = this.db.prepare("PRAGMA table_info(conversations)").all();
+                const hasCorrectSchema = conversationsInfo.some((col: any) => col.name === 'summary');
+
+                if (!hasCorrectSchema) {
+                    console.log('🔄 Migrating database to latest schema...');
+                    await this.migrateConversationTable();
+                } else {
+                    console.log('✅ Database schema is up to date');
+                }
             }
 
             // Always ensure core tables exist regardless of database state
@@ -493,6 +493,9 @@ export class MemoryDatabase {
         } catch (error) {
             console.log('🔄 Database migration needed, recreating conversation tables...');
             await this.recreateConversationTables();
+            // Always ensure core tables exist regardless of database state
+            console.log('🔄 Ensuring all core tables exist...');
+            await this.ensureCoreTables();
         }
     }
 
