@@ -12,8 +12,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        node: [20, 22]
+  os: [ubuntu-latest, windows-latest, macos-latest]
+  node: [20, 22]
 
     steps:
       - uses: actions/checkout@v4
@@ -21,6 +21,34 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           cache: 'npm'
+      - name: Setup Python (for node-gyp)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Configure node-gyp Python
+        run: |
+          npm config set python python3
+          node -e "console.log('python:', process.env.npm_config_python || 'python3')"
+      - name: Install build tools (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential python3 make g++ libssl-dev
+      - name: Prepare MSVC build env (Windows)
+        if: matrix.os == 'windows-latest'
+        uses: ilammy/msvc-dev-cmd@v1
+      - name: Configure MSVC version for node-gyp (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          npm config set msvs_version 2022
+          echo "Configured msvs_version=2022 for node-gyp"
+      - name: Show environment
+        run: |
+          echo "Runner OS: ${{ runner.os }}"
+          node -v
+          npm -v
+          python3 --version || true
+        shell: bash
       - name: Clean build artifacts
         run: |
           git --no-pager status
@@ -31,7 +59,7 @@ jobs:
           echo "Cleaned node_modules and dist (if existed)"
         shell: bash
       - name: Install deps
-        run: npm ci
+        run: npm ci --no-audit --prefer-offline
       - name: Ensure better-sqlite3 loadable (CI)
         run: node scripts/ensure-sqlite.js
         shell: bash

@@ -34,8 +34,22 @@ export async function handleExportContext(
             } catch {}
         }
 
-        // Determine signing policy
-        const pol = ctx.policyBroker.getPolicy();
+        // Determine signing policy (supports both PolicyService and PolicyBroker)
+        const pol = (() => {
+            try {
+                // If PolicyService was passed: use getPolicyBroker().getPolicy()
+                if (ctx.policyBroker && typeof ctx.policyBroker.getPolicyBroker === 'function') {
+                    const pb = ctx.policyBroker.getPolicyBroker();
+                    if (pb && typeof pb.getPolicy === 'function') return pb.getPolicy();
+                }
+                // If PolicyBroker was passed directly
+                if (ctx.policyBroker && typeof ctx.policyBroker.getPolicy === 'function') {
+                    return ctx.policyBroker.getPolicy();
+                }
+            } catch {}
+            // Safe defaults
+            return { signExports: false, forceSignedExports: false } as any;
+        })();
         let signReason: 'force' | 'flag' | 'policy' | 'env' | undefined;
         let wantSign: boolean;
         
@@ -167,8 +181,8 @@ export async function handleExportContext(
             fs.writeFileSync(path.join(tmpDir, 'vectors.f32'), Buffer.alloc(0));
         }
 
-        // Create manifest
-        const manifest = {
+    // Create manifest
+    const manifest: any = {
             schemaVersion: 1,
             type,
             count: list.length,
@@ -183,6 +197,16 @@ export async function handleExportContext(
 
         if (keyId) {
             (manifest as any).keyId = keyId;
+        }
+
+        // If delta export, embed delta block into manifest for portability
+        if (deltaBaseManifestDigest) {
+            manifest.delta = {
+                baseManifestDigest: deltaBaseManifestDigest,
+                originalCount: originalCountAll,
+                unchangedSkipped: unchangedFiltered,
+                exportedCount: list.length
+            };
         }
 
         fs.writeFileSync(path.join(tmpDir, 'manifest.json'), JSON.stringify(manifest, null, 2));
