@@ -1,5 +1,6 @@
 # SecuraMem (smem) — Air‑Gapped Code Memory CLI
 
+[![CI](https://github.com/SecuraMem/smem-cli-enterprise/actions/workflows/ci.yml/badge.svg)](https://github.com/SecuraMem/smem-cli-enterprise/actions/workflows/ci.yml)
 [![Changelog](https://img.shields.io/badge/Changelog-CHANGELOG.md-blue)](CHANGELOG.md)
 [![Release Notes Template](https://img.shields.io/badge/Release%20Notes-TEMPLATE-blueviolet)](.github/RELEASE_TEMPLATE.md)
 
@@ -76,6 +77,8 @@ Contact: securamem@gmail.com
 ## Legacy note
 
 Historical content for Securamem (smem) has been archived. See docs/archive/ for reference (e.g., archive/main-website-section.html, faq-section.html).
+
+<!-- delta test mutation -->
 
 <!-- delta test mutation -->
 
