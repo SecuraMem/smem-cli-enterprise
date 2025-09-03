@@ -165,6 +165,20 @@ export class CodeContextCLI {
                     memoryEngine: this.serviceContainer.getMemoryEngine() 
                 }, query, opts); 
             });
+
+        this.program
+            .command('reindex-file <file>')
+            .description('Reindex a specific file into SecuraMem')
+            .option('--symbols', 'Use symbol-aware chunking (functions/classes) where supported')
+            .action(async (file: string, opts: any) => {
+                const { handleReindexFile } = await import('./commands/ReindexFile.js');
+                await handleReindexFile({
+                    memoryEngine: this.serviceContainer.getMemoryEngine(),
+                    cleanup: this.cleanup.bind(this),
+                    proEnabled: this.proEnabled,
+                    nudgePro: this.nudgePro.bind(this)
+                }, file, opts);
+            });
     }
 
     private setupMaintenanceCommands(): void {
@@ -255,6 +269,35 @@ export class CodeContextCLI {
                     memoryEngine: this.serviceContainer.getMemoryEngine(), 
                     cleanup: this.cleanup.bind(this) 
                 }, options);
+            });
+
+        this.program
+            .command('export-context')
+            .description('Export context to file bundle (.smemctx)')
+            .option('--out <path>', 'Output path for context bundle', 'context.smemctx')
+            .option('--type <type>', 'Type of export (code|general)', 'code')
+            .option('--sign', 'Sign the export bundle')
+            .option('--delta-from <path>', 'Delta export: skip unchanged chunks from baseline')
+            .action(async (options) => {
+                const { handleExportContext } = await import('./commands/ExportContext.js');
+                await handleExportContext({
+                    memoryEngine: this.serviceContainer.getMemoryEngine(),
+                    policyBroker: this.serviceContainer.getPolicyService(),
+                    cleanup: this.cleanup.bind(this)
+                }, options);
+            });
+
+        this.program
+            .command('import-context <file>')
+            .description('Import context from bundle file')
+            .option('--allow-unsigned', 'Allow unsigned bundles (policy permitting)')
+            .action(async (file: string, options) => {
+                const { handleImportContext } = await import('./commands/ImportContext.js');
+                await handleImportContext({
+                    memoryEngine: this.serviceContainer.getMemoryEngine(),
+                    policyBroker: this.serviceContainer.getPolicyService(),
+                    cleanup: this.cleanup.bind(this)
+                }, file, options);
             });
     }
 
