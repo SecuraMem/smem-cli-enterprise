@@ -175,7 +175,6 @@ export class CodeContextCLI {
                 await handleReindexFile({
                     memoryEngine: this.serviceContainer.getMemoryEngine(),
                     cleanup: this.cleanup.bind(this),
-                    proEnabled: this.proEnabled,
                     nudgePro: this.nudgePro.bind(this)
                 }, file, opts);
             });
@@ -283,7 +282,7 @@ export class CodeContextCLI {
                 await handleExportContext({
                     memoryEngine: this.serviceContainer.getMemoryEngine(),
                     policyBroker: this.serviceContainer.getPolicyService(),
-                    cleanup: this.cleanup.bind(this)
+                    nudgePro: this.nudgePro.bind(this)
                 }, options);
             });
 
@@ -295,8 +294,7 @@ export class CodeContextCLI {
                 const { handleImportContext } = await import('./commands/ImportContext.js');
                 await handleImportContext({
                     memoryEngine: this.serviceContainer.getMemoryEngine(),
-                    policyBroker: this.serviceContainer.getPolicyService(),
-                    cleanup: this.cleanup.bind(this)
+                    policyBroker: this.serviceContainer.getPolicyService()
                 }, file, options);
             });
     }
