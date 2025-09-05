@@ -6,7 +6,7 @@ Air‑gapped, zero‑trust persistent memory CLI for AI agents and developers.
 
 CodeContextPro (cctx) makes code context and decisions durable, auditable, and portable without relying on any cloud services. It’s built for regulated and offline environments where transparency, audit, and operator control are non‑negotiable.
 
-For pricing details and the honor‑system approach, see: docs/pricing.md
+Note: This is an archived document for historical context.
 
 ## Why CodeContextPro
 

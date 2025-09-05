@@ -97,7 +97,7 @@ export async function handleHealth(ctx: { memoryEngine: MemoryEngine; proEnabled
         const worst = Object.entries(data.metrics.errors).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([k,v])=>`${k}=${v}%`).join(', ');
         console.log(`   Error rate by cmd: ${worst}`);
       }
-      console.log(`   Pro (honor-system): ${ctx.proEnabled ? 'ENABLED' : 'disabled'}`);
+  console.log(`   Pro: ${ctx.proEnabled ? 'ENABLED' : 'disabled'}`);
       if (sinceDays) {
         console.log(`   𝚫 Last ${sinceDays} day(s): +${memDelta} memories, +${vecDelta} vectors`);
         if (vecDelta > 0 && digests > 0) {

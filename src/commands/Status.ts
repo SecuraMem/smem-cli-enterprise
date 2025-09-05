@@ -32,12 +32,12 @@ export async function handleStatus(ctx: {
     if (tracer.flags.json) {
       console.log(JSON.stringify(data, null, 2));
     } else {
-      console.log(chalk.cyan('📊 SecuraMem - Unlimited Local-Only Status\n'));
+  console.log(chalk.cyan('📊 SecuraMem Enterprise — Local-Only Status\n'));
       console.log(chalk.cyan('📁 Project Information:'));
       console.log(`   Path: ${data.project.path}`);
       console.log(`   Database: ${data.project.dbPath}`);
-      console.log(chalk.cyan('\n⭐ Pro status (honor-system):'));
-      console.log(`   ${ctx.proEnabled ? 'ENABLED' : 'disabled'}  (marker: ${ctx.proMarkerPath})`);
+  console.log(chalk.cyan('\n⭐ Pro status:'));
+  console.log(`   ${ctx.proEnabled ? 'ENABLED' : 'disabled'}  (marker: ${ctx.proMarkerPath})`);
       console.log(chalk.cyan('\n🧠 Memory Statistics:'));
       console.log(`   Total memories: ${data.memory.total}`);
       console.log(`   Database size: ${data.memory.sizeMB} MB`);

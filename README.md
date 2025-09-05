@@ -15,14 +15,17 @@ SecuraMem is an air‑gapped, AI‑agnostic persistent memory tool for developer
 - Code‑aware indexing and safe purging to keep context fresh
 - Import/export with cryptographic signatures and checksums
 
+## SecuraMem AI Labs — Secure PoC Factory
+- Overview: docs/Secure-PoC-Factory.md
+- One‑Pager (MD): docs/one-pagers/SecuraMem-AI-Labs-OnePager.md
+- One‑Pager (HTML): docs/one-pagers/SecuraMem-AI-Labs-OnePager.html
+- One‑Pager (PDF): docs/one-pagers/SecuraMem-AI-Labs-OnePager.pdf
+
 ## Quick start
 
 Install and view help:
 
-```powershell
-npm install -g securamem
-smem help
-```
+Note: This repository represents the Enterprise Edition. For public npm distribution (Community Edition), use the `securamem` package. For Enterprise access, contact securamem@gmail.com.
 
 Common flows:
 
@@ -66,114 +69,10 @@ See docs/ for full guides:
 
 See SECURITY.md for threat boundaries and hardening details.
 
-## Pricing & support (honor‑system)
+## Support
 
-- Core (OSS): free, fully functional for local use
-- Pro (Individual): $5/month — signed builds and operational extras
-- Team/Enterprise tiers available — see docs/pricing.md
-
-Contact: securamem@gmail.com
+For Enterprise licensing, evaluations, and support, contact: securamem@gmail.com
 
 ## Legacy note
 
 Historical content for Securamem (smem) has been archived. See docs/archive/ for reference (e.g., archive/main-website-section.html, faq-section.html).
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->
-
-<!-- delta test mutation -->

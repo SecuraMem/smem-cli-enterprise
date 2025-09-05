@@ -78,8 +78,8 @@ Status: Shipping (journal‑based replay). Snapshotting/time‑travel is planned
 
 Status: Shipping.
 
-### 7) Pro mode (honor‑system)
-- A simple local marker to toggle pro mode features; no network, no license checks.
+### 7) Pro mode
+- A simple local marker to toggle pro features; no network, no license checks.
 
 Status: Shipping baseline; reserved for future local‑only enhancements.
 

@@ -1,3 +1,12 @@
+Update (Sep 2025) — Alignment with working demo
+
+- Product/CLI naming: SecuraMem (smem). Mentions of CodeContextPro/cctx below refer to the same system; keep historical sections for provenance.
+- Current CLI surface: remember, recall, status, vector-status, self-test, init, index-code, search-code, reindex-file, policy, prove-offline, report, export-context, import-context, pro.
+- Audit viewing: use smem report --json (journal/receipt-show are not exposed as separate commands in the current CLI build).
+- Windows native vector backend: sqlite-vec vec0.dll is auto-detected from either .securamem/sqlite-vec/win32-x64/vec0.dll or node_modules/sqlite-vec-windows-x64/vec0.dll; otherwise the loader falls back to local-js.
+- Air-gapped models: pre-cache @xenova/transformers model files under .securamem/models via an offline bootstrap script; prove with smem prove-offline.
+- Quick commands: smem status; smem vector-status; smem report --json; smem index-code --path .; smem search-code "SymbolName".
+
 Executive Summary
 CodeContextPro (cctx) is a context infrastructure tool with Developer Parity: anything the agent does is transparent, reproducible, and verifiable by a human. We led with Agent Transparency & Operator Parity, then hardened zero‑trust + air‑gapped context integrity. Advanced semantic recall (Tree‑sitter + ANN) is the next performance leap. Sequence: build trust first → deliver durable recall → accelerate performance for power users.
 
@@ -269,7 +278,7 @@ Launch (Show HN) Readiness Checklist
 ✅ Path redaction guard
 ✅ Health + prove-offline (explicit no-egress proof)
 ✅ 19 passing tests (integrity, precedence, key mgmt, zip, checksum)
-✅ README quickstart & pricing clarity (honor-system)
+✅ README quickstart & enterprise licensing clarity
 ✅ Screencast script (docs/screencast-script.md)
 ⚠ Basic heuristic symbol mode (note in README). Pro: Tree‑sitter precision coming.
 ⚠ ANN acceleration not yet bundled (call out roadmap).

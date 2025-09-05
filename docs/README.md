@@ -20,3 +20,10 @@ Use the sidebar or links below to navigate.
 - [VS Code Integration](./vscode.md)
 - [Air-Gapped Export/Import](./airgapped.md)
 - [Troubleshooting](./troubleshooting.md)
+
+## SecuraMem AI Labs
+- Secure PoC Factory: See `Secure-PoC-Factory.md`
+- Security Evidence Pack:
+  - `whitepaper-security-architecture.md`
+  - `whitepaper-reproducible-builds.md`
+  - `whitepaper-auditability-receipts-and-journaling.md`

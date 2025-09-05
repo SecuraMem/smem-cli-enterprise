@@ -1,57 +1,25 @@
-# Pricing & Honor‑System FAQ
+# Licensing & Support (Enterprise)
 
-SMEM is MIT‑licensed and fully functional for everyone. We use an honor‑system for paid tiers: no license checks, no DRM, and no telemetry. If SMEM saves you time or unlocks offline workflows, please consider sponsoring.
+For Enterprise licensing, distribution, and support, contact securamem@gmail.com.
 
-## Tiers
+## Editions
 
- Core (OSS): Free — essentials for local use
-  - Indexing & search (FTS + hybrid re‑rank)
-  - Watch mode & digest cache
-  - Receipts & journal; vector/status & health; gc
-  - Air‑gapped export/import (.smemctx v0) and prove‑offline
+- Community Edition (CE): Public npm distribution (package name: `securamem`) for evaluation and local use.
+- Enterprise Edition (EE): Full product with advanced features, distributed via signed releases (private) or private registry.
 
- Pro (Individual): $5/month or $50/year — speed, convenience, and assurance
-  - Signed prebuilt binaries (Win/macOS/Linux) and prebundled sqlite‑vss when available
-  - Tree‑sitter symbol indexing pack for popular languages (improved symbol chunking)
-  - Advanced chunking & dedup heuristics; faster diff‑aware reindex
-  - Observability extras: receipt rollups and HTML health reports
-  - Policy templates pack and an interactive policy‑doctor wizard
-  - .smemctx enhancements: zipped container, checksums, merge, and verify reports
-  - Early features access; priority triage; email support (48–72h)
-- Team: $8/user/month (min $80/mo) — everything in Pro, plus org policy templates, onboarding kit, signed releases channel, email support (24–48h), quarterly roadmap call, usage/receipt aggregation scripts.
-- Enterprise: $25/user/month (min $1,000/mo or $12k/year) — everything in Team, plus security review artifacts, air‑gapped distribution playbooks, custom build signing bootstrap, priority support (business‑hours SLA), procurement docs, optional private workshop.
+## Enterprise delivery options
 
-Sponsor page: https://github.com/sponsors/jahboukie  
-Team/Enterprise: team.mobileweb@gmail.com
+- Signed .tgz artifacts with SHA256 checksums and SBOMs via GitHub Releases
+- Optional private npm scope for controlled distribution
+- Air‑gapped bootstrap packs (models, native libs, checksums, docs)
 
-## What is the honor‑system?
+## What’s in Enterprise
 
-The CLI works fully without payment. Sponsorship is voluntary and funds maintenance. Paid benefits are delivered outside the binary (signed builds, templates, support), keeping SMEM air‑gapped and privacy‑preserving.
+- Enhanced vector backends (sqlite‑vec/ANN), ONNX embeddings
+- Tree‑sitter precision indexing packs and performance enhancements
+- Compliance reporting and enterprise policy workflows
 
-## Why price it this way?
+## Support
 
-SMEM is a focus tool that complements coding assistants (Copilot, Cursor). Pricing stays modest for individuals and simple for teams while reflecting the value of local‑only, zero‑egress memory.
-
-## Why upgrade to Pro?
-
-- Save time with faster, smarter indexing (Tree‑sitter symbols; diff‑aware reindex)
-- Ship audits faster (HTML health/receipt reports; signed builds; verifyable .smemctx)
-- Reduce policy friction (ready‑to‑use templates; interactive doctor)
-- Get operational confidence (prebundled sqlite‑vss, curated binaries)
-- Support sustainability and get priority responses when you need help
-
-## How are benefits delivered?
-
-- Signed builds and templates via a private repo or release channel
-- Email support and triage via the project email
-- Onboarding kits and policy templates delivered as downloadable archives
-
-Note: Benefits are delivered outside the binary to preserve air‑gapped operation. There are no license checks, telemetry, or DRM.
-
-## Can I use SMEM commercially without sponsoring?
-
-Yes. Sponsorship is optional. If SMEM becomes critical to your workflows, sponsoring helps ensure long‑term support and improvements.
-
-## Refunds/cancellations
-
-Sponsorship can be canceled anytime via GitHub Sponsors. If you have issues, reach out to team.mobileweb@gmail.com.
+- Email support via securamem@gmail.com
+- Optional SLAs and onboarding for enterprise pilots

@@ -18,7 +18,7 @@ export class CodeContextCLI {
     private program: Command;
     private serviceContainer: ServiceContainer;
     
-    // Pro mode support (honor-system)
+    // Pro mode support
     private proEnabled: boolean = false;
     private proMarkerPath: string = path.join(process.cwd(), '.securamem', 'pro.enabled');
     private nudgesShown: Set<string> = new Set();
@@ -249,7 +249,7 @@ export class CodeContextCLI {
     private setupProCommands(): void {
         this.program
             .command('pro')
-            .description('Pro mode (honor-system): manage local Pro enablement')
+            .description('Pro mode: manage local Pro enablement')
             .option('--enable', 'Enable Pro mode locally')
             .option('--disable', 'Disable Pro mode locally')
             .option('--status', 'Show Pro status')
@@ -386,3 +386,6 @@ export function main(argv: string[]) {
 if (require.main === module) {
     main(process.argv);
 }
+// DIFF TEST MUTATION 1756940741042
+
+// DIFF TEST MUTATION 1757023510643
